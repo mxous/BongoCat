@@ -12,7 +12,7 @@ import live2d from '../utils/live2d'
 
 import { useCatStore } from '@/stores/cat'
 import { useModelStore } from '@/stores/model'
-import { getCursorMonitor } from '@/utils/monitor'
+// import { getCursorMonitor } from '@/utils/monitor'
 
 const appWindow = getCurrentWebviewWindow()
 
@@ -108,14 +108,17 @@ export function useModel() {
   }
 
   async function handleMouseMove(point: CursorPoint) {
-    const monitor = await getCursorMonitor(point)
+    // const monitor = await getCursorMonitor(point)
 
-    if (!monitor) return
+    // if (!monitor) return
 
-    const { size, position, cursorPoint } = monitor
+    // const { size, position, cursorPoint } = monitor
 
-    const xRatio = (cursorPoint.x - position.x) / size.width
-    const yRatio = (cursorPoint.y - position.y) / size.height
+    // const xRatio = (cursorPoint.x - position.x) / size.width
+    // const yRatio = (cursorPoint.y - position.y) / size.height
+
+    const xRatio = point.x / 3000
+    const yRatio = point.y / 1500
 
     for (const id of ['ParamMouseX', 'ParamMouseY', 'ParamAngleX', 'ParamAngleY']) {
       const { min, max } = live2d.getParameterRange(id)

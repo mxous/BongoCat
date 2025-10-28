@@ -5,6 +5,7 @@ use core::{
     device::start_device_listening,
     gamepad::{start_gamepad_listing, stop_gamepad_listing},
     prevent_default, setup,
+    mouse::start_raw_input
 };
 use tauri::{Manager, WindowEvent, generate_handler};
 use tauri_plugin_autostart::MacosLauncher;
@@ -29,6 +30,7 @@ pub fn run() {
         })
         .invoke_handler(generate_handler![
             copy_dir,
+            start_raw_input,
             start_device_listening,
             start_gamepad_listing,
             stop_gamepad_listing

@@ -39,10 +39,10 @@ pub async fn start_device_listening<R: Runtime>(app_handle: AppHandle<R>) -> Res
                 kind: DeviceEventKind::MouseRelease,
                 value: json!(format!("{:?}", button)),
             },
-            EventType::MouseMove { x, y } => DeviceEvent {
-                kind: DeviceEventKind::MouseMove,
-                value: json!({ "x": x, "y": y }),
-            },
+            // EventType::MouseMove { x, y } => DeviceEvent {
+            //     kind: DeviceEventKind::MouseMove,
+            //     value: json!({ "x": x, "y": y }),
+            // },
             EventType::KeyPress(key) => DeviceEvent {
                 kind: DeviceEventKind::KeyboardPress,
                 value: json!(format!("{:?}", key)),

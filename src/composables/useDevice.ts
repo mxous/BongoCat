@@ -36,6 +36,7 @@ export function useDevice() {
 
   const startListening = () => {
     invoke(INVOKE_KEY.START_DEVICE_LISTENING)
+    invoke('start_raw_input')
   }
 
   const debouncedRelease = useDebounceFn(handleRelease, 100)
@@ -71,6 +72,8 @@ export function useDevice() {
 
   useTauriListen<DeviceEvent>(LISTEN_KEY.DEVICE_CHANGED, ({ payload }) => {
     const { kind, value } = payload
+
+    // console.warn('Test Device Event:', payload)
 
     if (kind === 'KeyboardPress' || kind === 'KeyboardRelease') {
       const nextValue = getSupportedKey(value)
