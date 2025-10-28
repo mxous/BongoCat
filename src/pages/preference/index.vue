@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { Flex } from 'ant-design-vue'
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
+import { useI18n } from 'vue-i18n'
 
 import About from './components/about/index.vue'
 import Cat from './components/cat/index.vue'
@@ -11,43 +13,51 @@ import Shortcut from './components/shortcut/index.vue'
 import UpdateApp from '@/components/update-app/index.vue'
 import { useTray } from '@/composables/useTray'
 import { useAppStore } from '@/stores/app'
+import { useGeneralStore } from '@/stores/general'
 import { isMac } from '@/utils/platform'
 
 const { createTray } = useTray()
 const appStore = useAppStore()
 const current = ref(0)
+const { t } = useI18n()
+const generalStore = useGeneralStore()
+const appWindow = getCurrentWebviewWindow()
 
 onMounted(async () => {
   createTray()
 })
 
-const menus = [
+watch(() => generalStore.appearance.language, () => {
+  appWindow.setTitle(t('pages.preference.title'))
+}, { immediate: true })
+
+const menus = computed(() => [
   {
-    label: '猫咪设置',
+    label: t('pages.preference.cat.title'),
     icon: 'i-solar:cat-bold',
     component: Cat,
   },
   {
-    label: '通用设置',
+    label: t('pages.preference.general.title'),
     icon: 'i-solar:settings-minimalistic-bold',
     component: General,
   },
   {
-    label: '模型管理',
+    label: t('pages.preference.model.title'),
     icon: 'i-solar:magic-stick-3-bold',
     component: Model,
   },
   {
-    label: '快捷键',
+    label: t('pages.preference.shortcut.title'),
     icon: 'i-solar:keyboard-bold',
     component: Shortcut,
   },
   {
-    label: '关于',
+    label: t('pages.preference.about.title'),
     icon: 'i-solar:info-circle-bold',
     component: About,
   },
-]
+])
 </script>
 
 <template>

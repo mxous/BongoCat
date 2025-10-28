@@ -11,23 +11,23 @@ const appWindow = getCurrentWebviewWindow()
 
 onMounted(() => {
   appWindow.onThemeChanged(async ({ payload }) => {
-    if (generalStore.theme !== 'auto') return
+    if (generalStore.appearance.theme !== 'auto') return
 
-    generalStore.isDark = payload === 'dark'
+    generalStore.appearance.isDark = payload === 'dark'
   })
 })
 
-watch(() => generalStore.theme, async (value) => {
+watch(() => generalStore.appearance.theme, async (value) => {
   let nextTheme = value === 'auto' ? null : value
 
   await appWindow.setTheme(nextTheme)
 
   nextTheme = nextTheme ?? (await appWindow.theme())
 
-  generalStore.isDark = nextTheme === 'dark'
+  generalStore.appearance.isDark = nextTheme === 'dark'
 }, { immediate: true })
 
-watch(() => generalStore.isDark, (value) => {
+watch(() => generalStore.appearance.isDark, (value) => {
   if (value) {
     document.documentElement.classList.add('dark')
   } else {
@@ -37,16 +37,16 @@ watch(() => generalStore.isDark, (value) => {
 </script>
 
 <template>
-  <ProListItem title="主题模式">
-    <Select v-model:value="generalStore.theme">
+  <ProListItem :title="$t('pages.preference.general.labels.themeMode')">
+    <Select v-model:value="generalStore.appearance.theme">
       <SelectOption value="auto">
-        跟随系统
+        {{ $t('pages.preference.general.options.auto') }}
       </SelectOption>
       <SelectOption value="light">
-        亮色模式
+        {{ $t('pages.preference.general.options.lightMode') }}
       </SelectOption>
       <SelectOption value="dark">
-        暗色模式
+        {{ $t('pages.preference.general.options.darkMode') }}
       </SelectOption>
     </Select>
   </ProListItem>

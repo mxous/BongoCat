@@ -1,6 +1,6 @@
 [package]
 name = "bongo-cat"
-version = "0.7.1"
+version = "0.8.1"
 description = "A Tauri App"
 authors = [ "ayangweb" ]
 edition = "2024"
@@ -37,6 +37,7 @@ tauri-plugin-fs = "2"
 fs_extra = "1"
 tauri-plugin-clipboard-manager = "2"
 tauri-plugin-global-shortcut = "2"
+tauri-plugin-locale = "2"
 rdev = { git = "https://github.com/kunkunsh/rdev" }
 gilrs = { git = "https://github.com/ayangweb/gilrs", default-features = false, features = ["xinput"] }
 windows = { version = "0.58", features = [

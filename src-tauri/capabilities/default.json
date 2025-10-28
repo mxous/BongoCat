@@ -15,6 +15,7 @@
     "core:window:allow-set-decorations",
     "core:window:allow-set-position",
     "core:window:allow-set-theme",
+    "core:window:allow-set-title",
     "custom-window:default",
     "os:default",
     "process:default",
@@ -46,6 +47,7 @@
     "clipboard-manager:allow-write-text",
     "global-shortcut:allow-is-registered",
     "global-shortcut:allow-register",
-    "global-shortcut:allow-unregister"
+    "global-shortcut:allow-unregister",
+    "locale:default"
   ]
 }
