@@ -35,6 +35,8 @@ static APP_HANDLE: Lazy<Mutex<Option<AppHandle<Wry>>>> = Lazy::new(|| Mutex::new
 
 static MOUSE_POSITION: Mutex<(i32, i32)> = Mutex::new((0, 0));
 
+static RUMBLE_VALUE: Lazy<Mutex<i32>> = Lazy::new(|| Mutex::new(250));
+
 thread_local! {
     static HOOK_HANDLE: RefCell<Option<HHOOK>> = RefCell::new(None);
 }
@@ -52,6 +54,13 @@ pub async fn start_raw_input(app: AppHandle<Wry>) -> std::result::Result<(), Str
         setup_raw_input(&app).map_err(|e| e.to_string())?;
     }
     
+    Ok(())
+}
+
+#[command]
+pub fn set_rumble_value(value: i32) -> std::result::Result<(), String> {
+    let mut rumble = RUMBLE_VALUE.lock().map_err(|e| e.to_string())?;
+    *rumble = value;
     Ok(())
 }
 
@@ -137,6 +146,15 @@ unsafe fn handle_raw_input(lparam: LPARAM, app: &AppHandle<Wry>) {
         pos.0 += delta_x;
         pos.1 += delta_y;
 
+        let change = *RUMBLE_VALUE.lock().unwrap();
+
+        if pos.0 < 0 { pos.0 += change; }
+        if pos.0 > 3000 { pos.0 -= change; }
+
+        if pos.1 < 0 { pos.1 += change; }
+        if pos.1 > 1500 { pos.1 -= change; }
+
+        // Fail safe boundaries
         if pos.0 < 0 { pos.0 = 0; }
         if pos.0 > 3000 { pos.0 = 3000; }
 

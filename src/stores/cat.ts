@@ -14,6 +14,7 @@ export interface CatStore {
     scale: number
     opacity: number
     radius: number
+    rumble: number
   }
 }
 
@@ -57,6 +58,7 @@ export const useCatStore = defineStore('cat', () => {
     scale: 100,
     opacity: 100,
     radius: 0,
+    rumble: 250,
   })
 
   const init = () => {

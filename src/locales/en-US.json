@@ -19,7 +19,8 @@
           "alwaysOnTop": "Always On Top",
           "windowSize": "Window Size",
           "windowRadius": "Window Radius",
-          "opacity": "Opacity"
+          "opacity": "Opacity",
+          "rumble": "Rumble"
         },
         "hints": {
           "mirrorMode": "When enabled, the model will be horizontally flipped.",

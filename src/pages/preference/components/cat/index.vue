@@ -1,11 +1,34 @@
 <script setup lang="ts">
 import { InputNumber, Slider, Switch } from 'ant-design-vue'
+import { invoke } from '@tauri-apps/api/core'
+import { onMounted, watch } from 'vue'
 
 import ProList from '@/components/pro-list/index.vue'
 import ProListItem from '@/components/pro-list-item/index.vue'
 import { useCatStore } from '@/stores/cat'
 
 const catStore = useCatStore()
+
+// Initialize the rumble value on the backend when component mounts
+onMounted(async () => {
+  try {
+    await invoke('set_rumble_value', { value: catStore.window.rumble })
+  } catch (error) {
+    console.error('Failed to set rumble value:', error)
+  }
+})
+
+// Watch for changes to the rumble value and sync with backend
+watch(
+  () => catStore.window.rumble,
+  async (newValue) => {
+    try {
+      await invoke('set_rumble_value', { value: newValue })
+    } catch (error) {
+      console.error('Failed to set rumble value:', error)
+    }
+  },
+)
 </script>
 
 <template>
@@ -78,6 +101,18 @@ const catStore = useCatStore()
         :max="100"
         :min="10"
         :tip-formatter="(value) => `${value}%`"
+      />
+    </ProListItem>
+
+    <ProListItem
+      :title="$t('pages.preference.cat.labels.rumble')"
+      vertical
+    >
+      <Slider
+        v-model:value="catStore.window.rumble"
+        class="m-0!"
+        :max="1000"
+        :min="0"
       />
     </ProListItem>
   </ProList>

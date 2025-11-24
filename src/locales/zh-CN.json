@@ -19,7 +19,8 @@
           "alwaysOnTop": "窗口置顶",
           "windowSize": "窗口尺寸",
           "windowRadius": "窗口圆角",
-          "opacity": "不透明度"
+          "opacity": "不透明度",
+          "rumble": "反馈强度"
         },
         "hints": {
           "mirrorMode": "启用后，模型将水平镜像翻转。",

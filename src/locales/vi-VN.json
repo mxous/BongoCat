@@ -19,7 +19,8 @@
           "alwaysOnTop": "Luôn trên cùng",
           "windowSize": "Kích thước",
           "windowRadius": "Độ bo tròn cửa sổ",
-          "opacity": "Độ mờ"
+          "opacity": "Độ mờ",
+          "rumble": "Cường độ phản hồi"
         },
         "hints": {
           "mirrorMode": "Bật để lật ngang mô hình.",
