@@ -20,7 +20,9 @@
           "windowSize": "Kích thước",
           "windowRadius": "Độ bo tròn cửa sổ",
           "opacity": "Độ mờ",
-          "rumble": "Cường độ phản hồi"
+          "rumble": "Cường độ phản hồi",
+          "autoReleaseDelay": "Độ trễ tự động nhả phím",
+          "hideOnHover": "Ẩn khi di chuột"
         },
         "hints": {
           "mirrorMode": "Bật để lật ngang mô hình.",
@@ -28,7 +30,9 @@
           "mouseMirror": "Khi bật, chuột của mô hình sẽ phản chiếu theo chuyển động chuột thực tế.",
           "passThrough": "Bật để cửa sổ không ảnh hưởng đến thao tác trên ứng dụng khác.",
           "alwaysOnTop": "Bật để cửa sổ luôn nằm trên ứng dụng khác.",
-          "windowSize": "Di chuyển chuột đến mép cửa sổ hoặc giữ Shift và kéo chuột phải để thay đổi kích thước."
+          "windowSize": "Di chuyển chuột đến mép cửa sổ hoặc giữ Shift và kéo chuột phải để thay đổi kích thước.",
+          "autoReleaseDelay": "Do Windows không bắt được sự kiện nhả của một số phím hệ thống, các phím đó sẽ được tự động xem như đã nhả sau khi hết thời gian chờ.",
+          "hideOnHover": "Khi bật, cửa sổ sẽ ẩn khi chuột di chuyển vào."
         }
       },
       "general": {
@@ -124,22 +128,22 @@
       "hints": {
         "pressRecordShortcut": "Nhấn phím/tổ hợp phím để ghi",
         "clickRecordShortcut": "Click để ghi phím tắt"
+      }
+    },
+    "updateApp": {
+      "title": "Đã tìm thấy phiên bản mới 🥳",
+      "labels": {
+        "updateVersion": "Phiên bản: ",
+        "updateTime": "Thời gian cập nhật: ",
+        "changelog": "Nhật ký thay đổi: "
       },
-      "updateApp": {
-        "title": "Đã tìm thấy phiên bản mới 🥳",
-        "labels": {
-          "updateVersion": "Phiên bản: ",
-          "updateTime": "Thời gian cập nhật: ",
-          "changelog": "Nhật ký thay đổi: "
-        },
-        "hints": {
-          "checkingUpdates": "Đang kiểm tra cập nhật...",
-          "alreadyLatest": "Bạn đang dùng phiên bản mới nhất 🎉"
-        },
-        "buttons": {
-          "updateNow": "Cập nhật ngay",
-          "updateLater": "Để sau"
-        }
+      "hints": {
+        "checkingUpdates": "Đang kiểm tra cập nhật...",
+        "alreadyLatest": "Bạn đang dùng phiên bản mới nhất 🎉"
+      },
+      "buttons": {
+        "updateNow": "Cập nhật ngay",
+        "updateLater": "Để sau"
       }
     }
   },
@@ -159,6 +163,13 @@
       "openSource": "Mã nguồn",
       "restartApp": "Khởi động lại",
       "quitApp": "Thoát"
+    }
+  },
+  "utils": {
+    "live2d": {
+      "hints": {
+        "notFound": "Không tìm thấy tệp cấu hình chính của mô hình, vui lòng xác nhận các tệp mô hình có đầy đủ không."
+      }
     }
   }
 }

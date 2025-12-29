@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { InputNumber, Slider, Switch } from 'ant-design-vue'
 import { invoke } from '@tauri-apps/api/core'
+import { InputNumber, Slider, Switch } from 'ant-design-vue'
 import { onMounted, watch } from 'vue'
 
 import ProList from '@/components/pro-list/index.vue'
 import ProListItem from '@/components/pro-list-item/index.vue'
 import { useCatStore } from '@/stores/cat'
+import { isWindows } from '@/utils/platform'
 
 const catStore = useCatStore()
 
@@ -53,6 +54,18 @@ watch(
     >
       <Switch v-model:checked="catStore.model.mouseMirror" />
     </ProListItem>
+
+    <ProListItem
+      v-if="isWindows"
+      :description="$t('pages.preference.cat.hints.autoReleaseDelay')"
+      :title="$t('pages.preference.cat.labels.autoReleaseDelay')"
+    >
+      <InputNumber
+        v-model:value="catStore.model.autoReleaseDelay"
+        addon-after="s"
+        class="w-28"
+      />
+    </ProListItem>
   </ProList>
 
   <ProList :title="$t('pages.preference.cat.labels.windowSettings')">
@@ -68,6 +81,13 @@ watch(
       :title="$t('pages.preference.cat.labels.alwaysOnTop')"
     >
       <Switch v-model:checked="catStore.window.alwaysOnTop" />
+    </ProListItem>
+
+    <ProListItem
+      :description="$t('pages.preference.cat.hints.hideOnHover')"
+      :title="$t('pages.preference.cat.labels.hideOnHover')"
+    >
+      <Switch v-model:checked="catStore.window.hideOnHover" />
     </ProListItem>
 
     <ProListItem
@@ -97,7 +117,7 @@ watch(
     >
       <Slider
         v-model:value="catStore.window.opacity"
-        class="m-0!"
+        class="m-[0]!"
         :max="100"
         :min="10"
         :tip-formatter="(value) => `${value}%`"
