@@ -1,6 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
-import { cursorPosition } from '@tauri-apps/api/window'
+// import { cursorPosition } from '@tauri-apps/api/window'
 
 import { INVOKE_KEY, LISTEN_KEY } from '../constants'
 
@@ -64,8 +64,8 @@ export function useDevice() {
     return nextKey
   }
 
-  const handleCursorMove = async () => {
-    const cursorPoint = await cursorPosition()
+  const handleCursorMove = async (cursorPoint: CursorPoint) => {
+    // const cursorPoint = await cursorPosition()
 
     handleMouseMove(cursorPoint)
 
@@ -134,7 +134,7 @@ export function useDevice() {
       case 'MouseRelease':
         return handleMouseChange(value, false)
       case 'MouseMove':
-        return handleCursorMove()
+        return handleCursorMove(value)
     }
   })
 

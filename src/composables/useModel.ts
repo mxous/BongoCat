@@ -1,4 +1,6 @@
-import type { PhysicalPosition } from '@tauri-apps/api/dpi'
+// import type { PhysicalPosition } from '@tauri-apps/api/dpi'
+
+import type { CursorPoint } from './useDevice'
 
 import { LogicalSize } from '@tauri-apps/api/dpi'
 import { resolveResource, sep } from '@tauri-apps/api/path'
@@ -107,13 +109,15 @@ export function useModel() {
     live2d.setParameterValue(id, pressed)
   }
 
-  async function handleMouseMove(cursorPoint: PhysicalPosition) {
+  async function handleMouseMove(cursorPoint: CursorPoint) {
     // const monitor = await getCursorMonitor(cursorPoint)
 
     // const { size, position } = monitor
 
-    const xRatio = cursorPoint.x / 3000
-    const yRatio = cursorPoint.y / 1500
+    const xRatio = cursorPoint.x / 4000
+    const yRatio = cursorPoint.y / 2000
+
+    // console.log("Ratio: x={}, y={}", xRatio, yRatio);
 
     for (const id of ['ParamMouseX', 'ParamMouseY', 'ParamAngleX', 'ParamAngleY']) {
       const { min, max } = live2d.getParameterRange(id)

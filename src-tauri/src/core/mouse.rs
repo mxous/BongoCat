@@ -86,11 +86,16 @@ unsafe extern "system" fn window_hook_proc(
 
 unsafe fn setup_raw_input(app: &AppHandle<Wry>) -> Result<()> {
     // Get window handle from Tauri
-    let window = app.get_webview_window("main")
-                                      .ok_or_else(|| Error::new(E_FAIL, "Window not found"))?;
+    let window = match app.get_webview_window("main") {
+        Some(w) => w,
+        None => return Ok(()),
+    };
 
-    let raw_handle = window.hwnd()
-        .map_err(|e| Error::new(E_FAIL, e.to_string()))?;
+    let raw_handle = match window.hwnd() {
+        Ok(h) => h,
+        Err(_) => return Ok(()),
+    };
+
     let hwnd = HWND(raw_handle.0);
 
     // Register for mouse raw input
@@ -148,25 +153,30 @@ unsafe fn handle_raw_input(lparam: LPARAM, app: &AppHandle<Wry>) {
 
         let change = *RUMBLE_VALUE.lock().unwrap();
 
+        // println!("Rumble: {}", change);
+
+        let x_max = 4000;
+        let y_max = 2000;
+
         if pos.0 < 0 { pos.0 += change; }
-        if pos.0 > 3000 { pos.0 -= change; }
+        if pos.0 > x_max { pos.0 -= change; }
 
         if pos.1 < 0 { pos.1 += change; }
-        if pos.1 > 1500 { pos.1 -= change; }
+        if pos.1 > y_max { pos.1 -= change; }
 
         // Fail safe boundaries
         if pos.0 < 0 { pos.0 = 0; }
-        if pos.0 > 3000 { pos.0 = 3000; }
+        if pos.0 > x_max { pos.0 = x_max; }
 
         if pos.1 < 0 { pos.1 = 0; }
-        if pos.1 > 1500 { pos.1 = 1500; }
+        if pos.1 > y_max { pos.1 = y_max; }
 
         let device_event = DeviceEvent {
             kind: DeviceEventKind::MouseMove,
             value: json!({ "x": pos.0, "y": pos.1 }), 
         };
         
-        //println!("Mouse Move Event: x={}, y={}", pos.0, pos.1);
+        // println!("Mouse Move Event: x={}, y={}", pos.0, pos.1);
 
         // Emit to frontend
         let _ = app.emit("device-changed", device_event);
