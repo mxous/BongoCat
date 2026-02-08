@@ -36,9 +36,6 @@ interface KeyboardEvent {
 
 type DeviceEvent = MouseButtonEvent | MouseMoveEvent | KeyboardEvent
 
-const X_MAX = 4000
-const Y_MAX = 2000
-
 export function useDevice() {
   const modelStore = useModelStore()
   const releaseTimers = new Map<string, NodeJS.Timeout>()
@@ -82,8 +79,8 @@ export function useDevice() {
       const { size, position } = monitor
 
       const cursorPoint = {
-        x: ((physicalPos.x - position.x) / size.width) * X_MAX,
-        y: ((physicalPos.y - position.y) / size.height) * Y_MAX,
+        x: (physicalPos.x - position.x) / size.width,
+        y: (physicalPos.y - position.y) / size.height,
       }
       updateMousePosition(cursorPoint)
     }, 16)
@@ -99,6 +96,8 @@ export function useDevice() {
   function updateMousePosition(cursorPoint: CursorPoint) {
     handleMouseMove(cursorPoint)
 
+    // BUG: cursorPoint is a 0-1 ratio, but the check below compares it against
+    // physical pixel coordinates. This means hideOnHover never triggers correctly.
     if (catStore.window.hideOnHover) {
       const appWindow = getCurrentWebviewWindow()
 
@@ -141,12 +140,12 @@ export function useDevice() {
     mousePosition.y += delta.y
 
     if (mousePosition.x < 0) mousePosition.x += rumble
-    if (mousePosition.x > X_MAX) mousePosition.x -= rumble
+    if (mousePosition.x > catStore.window.mouseBoundsX) mousePosition.x -= rumble
     if (mousePosition.y < 0) mousePosition.y += rumble
-    if (mousePosition.y > Y_MAX) mousePosition.y -= rumble
+    if (mousePosition.y > catStore.window.mouseBoundsY) mousePosition.y -= rumble
 
-    mousePosition.x = Math.max(0, Math.min(X_MAX, mousePosition.x))
-    mousePosition.y = Math.max(0, Math.min(Y_MAX, mousePosition.y))
+    mousePosition.x = Math.max(0, Math.min(catStore.window.mouseBoundsX, mousePosition.x))
+    mousePosition.y = Math.max(0, Math.min(catStore.window.mouseBoundsY, mousePosition.y))
   }
 
   const scheduleMouseUpdate = () => {
@@ -156,7 +155,10 @@ export function useDevice() {
 
     requestAnimationFrame(() => {
       pendingMouseMove = false
-      updateMousePosition({ x: mousePosition.x, y: mousePosition.y })
+      updateMousePosition({
+        x: mousePosition.x / catStore.window.mouseBoundsX,
+        y: mousePosition.y / catStore.window.mouseBoundsY,
+      })
     })
   }
 

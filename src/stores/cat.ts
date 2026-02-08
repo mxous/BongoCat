@@ -16,6 +16,8 @@ export interface CatStore {
     opacity: number
     radius: number
     rumble: number
+    mouseBoundsX: number
+    mouseBoundsY: number
     mouseMode: 'relative' | 'absolute'
     hideOnHover: boolean
     position: 'none' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
@@ -64,6 +66,8 @@ export const useCatStore = defineStore('cat', () => {
     opacity: 100,
     radius: 0,
     rumble: 250,
+    mouseBoundsX: 4000,
+    mouseBoundsY: 2000,
     mouseMode: 'relative',
     hideOnHover: false,
     position: 'none',

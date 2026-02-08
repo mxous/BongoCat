@@ -133,5 +133,33 @@ const catStore = useCatStore()
         :min="0"
       />
     </ProListItem>
+
+    <ProListItem
+      v-if="isWindows && catStore.window.mouseMode === 'relative'"
+      :description="$t('pages.preference.cat.hints.mouseBounds')"
+      :title="$t('pages.preference.cat.labels.mouseBoundsX')"
+      vertical
+    >
+      <Slider
+        v-model:value="catStore.window.mouseBoundsX"
+        class="m-0!"
+        :max="10000"
+        :min="500"
+      />
+    </ProListItem>
+
+    <ProListItem
+      v-if="isWindows && catStore.window.mouseMode === 'relative'"
+      :description="$t('pages.preference.cat.hints.mouseBounds')"
+      :title="$t('pages.preference.cat.labels.mouseBoundsY')"
+      vertical
+    >
+      <Slider
+        v-model:value="catStore.window.mouseBoundsY"
+        class="m-0!"
+        :max="10000"
+        :min="500"
+      />
+    </ProListItem>
   </ProList>
 </template>
