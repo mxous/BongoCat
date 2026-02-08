@@ -12,6 +12,8 @@ export function useWindowPosition() {
   const isMounted = ref(false)
 
   const setWindowPosition = async () => {
+    if (catStore.window.position === 'none') return
+
     const monitor = await getCursorMonitor()
 
     if (!monitor) return

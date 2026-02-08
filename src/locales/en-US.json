@@ -43,6 +43,7 @@
           "position": "Takes effect after the app starts, or when this parameter, window size, model, or screen resolution changes."
         },
         "options": {
+          "none": "None",
           "topLeft": "Top Left",
           "topRight": "Top Right",
           "bottomLeft": "Bottom Left",

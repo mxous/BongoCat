@@ -43,6 +43,7 @@
           "position": "Có hiệu lực sau khi khởi động ứng dụng hoặc khi tham số này, kích thước cửa sổ, mô hình hoặc độ phân giải màn hình thay đổi."
         },
         "options": {
+          "none": "Không",
           "topLeft": "Góc trên cùng bên trái",
           "topRight": "Góc trên cùng bên phải",
           "bottomLeft": "Góc dưới cùng bên trái",

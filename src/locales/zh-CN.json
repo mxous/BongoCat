@@ -43,6 +43,7 @@
           "position": "应用启动后，或当此参数、窗口尺寸、模型、电脑分辨率发生变化时生效。"
         },
         "options": {
+          "none": "无",
           "topLeft": "左上角",
           "topRight": "右上角",
           "bottomLeft": "左下角",

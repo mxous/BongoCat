@@ -18,7 +18,7 @@ export interface CatStore {
     rumble: number
     mouseMode: 'relative' | 'absolute'
     hideOnHover: boolean
-    position: 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
+    position: 'none' | 'topLeft' | 'topRight' | 'bottomLeft' | 'bottomRight'
   }
 }
 
@@ -66,7 +66,7 @@ export const useCatStore = defineStore('cat', () => {
     rumble: 250,
     mouseMode: 'relative',
     hideOnHover: false,
-    position: 'bottomRight',
+    position: 'none',
   })
 
   const init = () => {
