@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(cargo check:*)",
-      "Bash(npx eslint:*)"
+      "Bash(npx eslint:*)",
+      "Bash(git checkout:*)",
+      "Bash(pnpm install:*)"
     ]
   }
 }

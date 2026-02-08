@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { InputNumber, Select, SelectOption, Slider, Switch } from 'ant-design-vue'
 
+import Position from './components/position/index.vue'
+
 import ProList from '@/components/pro-list/index.vue'
 import ProListItem from '@/components/pro-list-item/index.vue'
 import { useCatStore } from '@/stores/cat'
@@ -46,6 +48,8 @@ const catStore = useCatStore()
   </ProList>
 
   <ProList :title="$t('pages.preference.cat.labels.windowSettings')">
+    <Position />
+
     <ProListItem
       :description="$t('pages.preference.cat.hints.passThrough')"
       :title="$t('pages.preference.cat.labels.passThrough')"
@@ -75,6 +79,7 @@ const catStore = useCatStore()
         v-model:value="catStore.window.scale"
         addon-after="%"
         class="w-28"
+        :max="500"
         :min="1"
       />
     </ProListItem>
