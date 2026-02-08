@@ -16,6 +16,7 @@ export interface CatStore {
     opacity: number
     radius: number
     rumble: number
+    mouseMode: 'relative' | 'absolute'
     hideOnHover: boolean
   }
 }
@@ -62,6 +63,7 @@ export const useCatStore = defineStore('cat', () => {
     opacity: 100,
     radius: 0,
     rumble: 250,
+    mouseMode: 'relative',
     hideOnHover: false,
   })
 

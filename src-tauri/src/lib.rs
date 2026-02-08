@@ -5,14 +5,33 @@ use core::{
     device::start_device_listening,
     gamepad::{start_gamepad_listing, stop_gamepad_listing},
     prevent_default, setup,
-    mouse::{start_raw_input, set_rumble_value},
 };
-use tauri::{Manager, WindowEvent, generate_handler};
+use tauri::{AppHandle, Manager, Wry, WindowEvent, command, generate_handler};
 use tauri_plugin_autostart::MacosLauncher;
 use tauri_plugin_custom_window::{
     MAIN_WINDOW_LABEL, PREFERENCE_WINDOW_LABEL, show_preference_window,
 };
 use utils::fs_extra::copy_dir;
+
+#[command]
+fn start_raw_input(app: AppHandle<Wry>) -> Result<(), String> {
+    raw_mouse_plugin::start_raw_input(app)
+}
+
+#[command]
+fn stop_raw_input() -> Result<(), String> {
+    raw_mouse_plugin::stop_raw_input()
+}
+
+#[command]
+fn set_tracking_mode(mode: String) -> Result<(), String> {
+    raw_mouse_plugin::set_tracking_mode(mode)
+}
+
+#[command]
+fn get_mouse_position() -> Result<(i32, i32), String> {
+    raw_mouse_plugin::get_mouse_position()
+}
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
@@ -31,7 +50,9 @@ pub fn run() {
         .invoke_handler(generate_handler![
             copy_dir,
             start_raw_input,
-            set_rumble_value,
+            stop_raw_input,
+            set_tracking_mode,
+            get_mouse_position,
             start_device_listening,
             start_gamepad_listing,
             stop_gamepad_listing

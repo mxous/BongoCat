@@ -19,3 +19,4 @@ fs_extra = "1"
 tauri-plugin = { version = "2", features = [ "build" ] }
 tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "v2" }
 tauri-plugin-custom-window = { path = "./src-tauri/src/plugins/window" }
+raw-mouse-plugin = { path = "../raw-mouse-plugin" }
