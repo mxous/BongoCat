@@ -23,16 +23,6 @@ fn stop_raw_input() -> Result<(), String> {
     raw_mouse_plugin::stop_raw_input()
 }
 
-#[command]
-fn set_tracking_mode(mode: String) -> Result<(), String> {
-    raw_mouse_plugin::set_tracking_mode(mode)
-}
-
-#[command]
-fn get_mouse_position() -> Result<(i32, i32), String> {
-    raw_mouse_plugin::get_mouse_position()
-}
-
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let app = tauri::Builder::default()
@@ -51,8 +41,6 @@ pub fn run() {
             copy_dir,
             start_raw_input,
             stop_raw_input,
-            set_tracking_mode,
-            get_mouse_position,
             start_device_listening,
             start_gamepad_listing,
             stop_gamepad_listing

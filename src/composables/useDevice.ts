@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
+import { cursorPosition } from '@tauri-apps/api/window'
 import { watch } from 'vue'
 
 import { INVOKE_KEY, LISTEN_KEY } from '../constants'
@@ -10,6 +11,7 @@ import { useTauriListen } from './useTauriListen'
 import { useCatStore } from '@/stores/cat'
 import { useModelStore } from '@/stores/model'
 import { inBetween } from '@/utils/is'
+import { getCursorMonitor } from '@/utils/monitor'
 import { isWindows } from '@/utils/platform'
 
 interface MouseButtonEvent {
@@ -49,21 +51,21 @@ export function useDevice() {
 
   const startListening = async () => {
     invoke(INVOKE_KEY.START_DEVICE_LISTENING)
-    await invoke(INVOKE_KEY.SET_TRACKING_MODE, { mode: catStore.window.mouseMode })
-    await invoke(INVOKE_KEY.START_RAW_INPUT)
 
     if (catStore.window.mouseMode === 'absolute') {
       startAbsolutePolling()
+    } else {
+      await invoke(INVOKE_KEY.START_RAW_INPUT)
     }
   }
 
-  watch(() => catStore.window.mouseMode, (mode) => {
-    invoke(INVOKE_KEY.SET_TRACKING_MODE, { mode })
-
+  watch(() => catStore.window.mouseMode, async (mode) => {
     if (mode === 'absolute') {
+      await invoke(INVOKE_KEY.STOP_RAW_INPUT)
       startAbsolutePolling()
     } else {
       stopAbsolutePolling()
+      await invoke(INVOKE_KEY.START_RAW_INPUT)
     }
   })
 
@@ -72,10 +74,16 @@ export function useDevice() {
     stopAbsolutePolling()
 
     absolutePollInterval = setInterval(async () => {
-      const [x, y] = await invoke<[number, number]>(INVOKE_KEY.GET_MOUSE_POSITION)
+      const physicalPos = await cursorPosition()
+      const monitor = await getCursorMonitor(physicalPos)
+
+      if (!monitor) return
+
+      const { size, position } = monitor
+
       const cursorPoint = {
-        x: (x / window.screen.width) * X_MAX,
-        y: (y / window.screen.height) * Y_MAX,
+        x: ((physicalPos.x - position.x) / size.width) * X_MAX,
+        y: ((physicalPos.y - position.y) / size.height) * Y_MAX,
       }
       updateMousePosition(cursorPoint)
     }, 16)
