@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { InputNumber, Slider, Switch } from 'ant-design-vue'
+import { InputNumber, Select, SelectOption, Slider, Switch } from 'ant-design-vue'
 
 import Position from './components/position/index.vue'
 
@@ -103,6 +103,34 @@ const catStore = useCatStore()
         :max="100"
         :min="10"
         :tip-formatter="(value) => `${value}%`"
+      />
+    </ProListItem>
+
+    <ProListItem
+      v-if="isWindows"
+      :description="$t('pages.preference.cat.hints.mouseMode')"
+      :title="$t('pages.preference.cat.labels.mouseMode')"
+    >
+      <Select v-model:value="catStore.window.mouseMode">
+        <SelectOption value="relative">
+          {{ $t('pages.preference.cat.mouseModeOptions.relative') }}
+        </SelectOption>
+        <SelectOption value="absolute">
+          {{ $t('pages.preference.cat.mouseModeOptions.absolute') }}
+        </SelectOption>
+      </Select>
+    </ProListItem>
+
+    <ProListItem
+      v-if="isWindows && catStore.window.mouseMode === 'relative'"
+      :title="$t('pages.preference.cat.labels.rumble')"
+      vertical
+    >
+      <Slider
+        v-model:value="catStore.window.rumble"
+        class="m-0!"
+        :max="1000"
+        :min="0"
       />
     </ProListItem>
   </ProList>

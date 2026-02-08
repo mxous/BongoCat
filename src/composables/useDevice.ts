@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWebviewWindow } from '@tauri-apps/api/webviewWindow'
 import { cursorPosition } from '@tauri-apps/api/window'
+import { watch } from 'vue'
 
 import { INVOKE_KEY, LISTEN_KEY } from '../constants'
 
@@ -10,6 +11,7 @@ import { useTauriListen } from './useTauriListen'
 import { useCatStore } from '@/stores/cat'
 import { useModelStore } from '@/stores/model'
 import { inBetween } from '@/utils/is'
+import { getCursorMonitor } from '@/utils/monitor'
 import { isWindows } from '@/utils/platform'
 
 interface MouseButtonEvent {
@@ -34,14 +36,83 @@ interface KeyboardEvent {
 
 type DeviceEvent = MouseButtonEvent | MouseMoveEvent | KeyboardEvent
 
+const X_MAX = 4000
+const Y_MAX = 2000
+
 export function useDevice() {
   const modelStore = useModelStore()
   const releaseTimers = new Map<string, NodeJS.Timeout>()
   const catStore = useCatStore()
   const { handlePress, handleRelease, handleMouseChange, handleMouseMove } = useModel()
 
-  const startListening = () => {
+  const mousePosition = { x: 0, y: 0 }
+  let pendingMouseMove = false
+  let absolutePollInterval: ReturnType<typeof setInterval> | null = null
+
+  const startListening = async () => {
     invoke(INVOKE_KEY.START_DEVICE_LISTENING)
+
+    if (catStore.window.mouseMode === 'absolute') {
+      startAbsolutePolling()
+    } else {
+      await invoke(INVOKE_KEY.START_RAW_INPUT)
+    }
+  }
+
+  watch(() => catStore.window.mouseMode, async (mode) => {
+    if (mode === 'absolute') {
+      await invoke(INVOKE_KEY.STOP_RAW_INPUT)
+      startAbsolutePolling()
+    } else {
+      stopAbsolutePolling()
+      await invoke(INVOKE_KEY.START_RAW_INPUT)
+    }
+  })
+
+  function startAbsolutePolling() {
+    // Stop any existing polling before starting a new one
+    stopAbsolutePolling()
+
+    absolutePollInterval = setInterval(async () => {
+      const physicalPos = await cursorPosition()
+      const monitor = await getCursorMonitor(physicalPos)
+
+      if (!monitor) return
+
+      const { size, position } = monitor
+
+      const cursorPoint = {
+        x: ((physicalPos.x - position.x) / size.width) * X_MAX,
+        y: ((physicalPos.y - position.y) / size.height) * Y_MAX,
+      }
+      updateMousePosition(cursorPoint)
+    }, 16)
+  }
+
+  function stopAbsolutePolling() {
+    if (absolutePollInterval !== null) {
+      clearInterval(absolutePollInterval)
+      absolutePollInterval = null
+    }
+  }
+
+  function updateMousePosition(cursorPoint: CursorPoint) {
+    handleMouseMove(cursorPoint)
+
+    if (catStore.window.hideOnHover) {
+      const appWindow = getCurrentWebviewWindow()
+
+      Promise.all([appWindow.outerPosition(), appWindow.innerSize()]).then(([position, { width, height }]) => {
+        const isInWindow = inBetween(cursorPoint.x, position.x, position.x + width)
+          && inBetween(cursorPoint.y, position.y, position.y + height)
+
+        document.body.style.setProperty('opacity', isInWindow ? '0' : 'unset')
+
+        if (!catStore.window.passThrough) {
+          appWindow.setIgnoreCursorEvents(isInWindow)
+        }
+      })
+    }
   }
 
   const getSupportedKey = (key: string) => {
@@ -63,25 +134,35 @@ export function useDevice() {
     return nextKey
   }
 
-  const handleCursorMove = async () => {
-    const cursorPoint = await cursorPosition()
+  const accumulateMouseDelta = (delta: CursorPoint) => {
+    const rumble = catStore.window.rumble
 
-    handleMouseMove(cursorPoint)
+    mousePosition.x += delta.x
+    mousePosition.y += delta.y
 
-    if (catStore.window.hideOnHover) {
-      const appWindow = getCurrentWebviewWindow()
-      const position = await appWindow.outerPosition()
-      const { width, height } = await appWindow.innerSize()
+    if (mousePosition.x < 0) mousePosition.x += rumble
+    if (mousePosition.x > X_MAX) mousePosition.x -= rumble
+    if (mousePosition.y < 0) mousePosition.y += rumble
+    if (mousePosition.y > Y_MAX) mousePosition.y -= rumble
 
-      const isInWindow = inBetween(cursorPoint.x, position.x, position.x + width)
-        && inBetween(cursorPoint.y, position.y, position.y + height)
+    mousePosition.x = Math.max(0, Math.min(X_MAX, mousePosition.x))
+    mousePosition.y = Math.max(0, Math.min(Y_MAX, mousePosition.y))
+  }
 
-      document.body.style.setProperty('opacity', isInWindow ? '0' : 'unset')
+  const scheduleMouseUpdate = () => {
+    if (pendingMouseMove) return
 
-      if (!catStore.window.passThrough) {
-        appWindow.setIgnoreCursorEvents(isInWindow)
-      }
-    }
+    pendingMouseMove = true
+
+    requestAnimationFrame(() => {
+      pendingMouseMove = false
+      updateMousePosition({ x: mousePosition.x, y: mousePosition.y })
+    })
+  }
+
+  const handleRelativeMouseMove = (delta: CursorPoint) => {
+    accumulateMouseDelta(delta)
+    scheduleMouseUpdate()
   }
 
   const handleAutoRelease = (key: string, delay = 100) => {
@@ -131,7 +212,8 @@ export function useDevice() {
       case 'MouseRelease':
         return handleMouseChange(value, false)
       case 'MouseMove':
-        return handleCursorMove()
+        if (catStore.window.mouseMode === 'absolute') return
+        return handleRelativeMouseMove(value)
     }
   })
 

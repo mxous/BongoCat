@@ -13,6 +13,9 @@ const catStore = useCatStore()
     :title="$t('pages.preference.cat.labels.position')"
   >
     <Select v-model:value="catStore.window.position">
+      <SelectOption value="none">
+        {{ $t('pages.preference.cat.options.none') }}
+      </SelectOption>
       <SelectOption value="bottomRight">
         {{ $t('pages.preference.cat.options.bottomRight') }}
       </SelectOption>

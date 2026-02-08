@@ -13,6 +13,8 @@ export const LISTEN_KEY = {
 export const INVOKE_KEY = {
   COPY_DIR: 'copy_dir',
   START_DEVICE_LISTENING: 'start_device_listening',
+  START_RAW_INPUT: 'start_raw_input',
+  STOP_RAW_INPUT: 'stop_raw_input',
   START_GAMEPAD_LISTING: 'start_gamepad_listing',
   STOP_GAMEPAD_LISTING: 'stop_gamepad_listing',
 }

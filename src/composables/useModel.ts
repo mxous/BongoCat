@@ -1,4 +1,6 @@
-import type { PhysicalPosition } from '@tauri-apps/api/dpi'
+// import type { PhysicalPosition } from '@tauri-apps/api/dpi'
+
+import type { CursorPoint } from './useDevice'
 
 import { LogicalSize } from '@tauri-apps/api/dpi'
 import { resolveResource, sep } from '@tauri-apps/api/path'
@@ -12,7 +14,7 @@ import live2d from '../utils/live2d'
 
 import { useCatStore } from '@/stores/cat'
 import { useModelStore } from '@/stores/model'
-import { getCursorMonitor } from '@/utils/monitor'
+// import { getCursorMonitor } from '@/utils/monitor'
 
 const appWindow = getCurrentWebviewWindow()
 
@@ -107,15 +109,15 @@ export function useModel() {
     live2d.setParameterValue(id, pressed)
   }
 
-  async function handleMouseMove(cursorPoint: PhysicalPosition) {
-    const monitor = await getCursorMonitor(cursorPoint)
+  async function handleMouseMove(cursorPoint: CursorPoint) {
+    // const monitor = await getCursorMonitor(cursorPoint)
 
-    if (!monitor) return
+    // const { size, position } = monitor
 
-    const { size, position } = monitor
+    const xRatio = cursorPoint.x / 4000
+    const yRatio = cursorPoint.y / 2000
 
-    const xRatio = (cursorPoint.x - position.x) / size.width
-    const yRatio = (cursorPoint.y - position.y) / size.height
+    // console.log("Ratio: x={}, y={}", xRatio, yRatio);
 
     for (const id of ['ParamMouseX', 'ParamMouseY', 'ParamAngleX', 'ParamAngleY']) {
       const { min, max } = live2d.getParameterRange(id)
