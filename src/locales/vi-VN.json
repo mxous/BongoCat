@@ -26,7 +26,7 @@
           "hideOnHover": "Ẩn khi di chuột",
           "position": "Vị trí cửa sổ"
         },
-        "options": {
+        "mouseModeOptions": {
           "relative": "Tương đối",
           "absolute": "Tuyệt đối"
         },

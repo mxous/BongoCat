@@ -113,10 +113,10 @@ const catStore = useCatStore()
     >
       <Select v-model:value="catStore.window.mouseMode">
         <SelectOption value="relative">
-          {{ $t('pages.preference.cat.options.relative') }}
+          {{ $t('pages.preference.cat.mouseModeOptions.relative') }}
         </SelectOption>
         <SelectOption value="absolute">
-          {{ $t('pages.preference.cat.options.absolute') }}
+          {{ $t('pages.preference.cat.mouseModeOptions.absolute') }}
         </SelectOption>
       </Select>
     </ProListItem>

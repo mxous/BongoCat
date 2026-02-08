@@ -26,7 +26,7 @@
           "hideOnHover": "鼠标移入隐藏",
           "position": "窗口位置"
         },
-        "options": {
+        "mouseModeOptions": {
           "relative": "相对",
           "absolute": "绝对"
         },
