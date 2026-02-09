@@ -21,3 +21,8 @@ target
 *.njsproj
 *.sln
 *.sw?
+
+# Claude
+nul
+.claude/
+CLAUDE.md
