@@ -140,12 +140,12 @@ export function useDevice() {
     mousePosition.y += delta.y
 
     if (mousePosition.x < 0) mousePosition.x += rumble
-    if (mousePosition.x > catStore.window.mouseBoundsX) mousePosition.x -= rumble
+    if (mousePosition.x > catStore.window.mouseBoundsSize) mousePosition.x -= rumble
     if (mousePosition.y < 0) mousePosition.y += rumble
-    if (mousePosition.y > catStore.window.mouseBoundsY) mousePosition.y -= rumble
+    if (mousePosition.y > catStore.window.mouseBoundsSize / 2) mousePosition.y -= rumble
 
-    mousePosition.x = Math.max(0, Math.min(catStore.window.mouseBoundsX, mousePosition.x))
-    mousePosition.y = Math.max(0, Math.min(catStore.window.mouseBoundsY, mousePosition.y))
+    mousePosition.x = Math.max(0, Math.min(catStore.window.mouseBoundsSize, mousePosition.x))
+    mousePosition.y = Math.max(0, Math.min(catStore.window.mouseBoundsSize / 2, mousePosition.y))
   }
 
   const scheduleMouseUpdate = () => {
@@ -156,8 +156,8 @@ export function useDevice() {
     requestAnimationFrame(() => {
       pendingMouseMove = false
       updateMousePosition({
-        x: mousePosition.x / catStore.window.mouseBoundsX,
-        y: mousePosition.y / catStore.window.mouseBoundsY,
+        x: mousePosition.x / catStore.window.mouseBoundsSize,
+        y: mousePosition.y / (catStore.window.mouseBoundsSize / 2),
       })
     })
   }
