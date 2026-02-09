@@ -14,7 +14,6 @@ import live2d from '../utils/live2d'
 
 import { useCatStore } from '@/stores/cat'
 import { useModelStore } from '@/stores/model'
-// import { getCursorMonitor } from '@/utils/monitor'
 
 const appWindow = getCurrentWebviewWindow()
 
@@ -110,15 +109,6 @@ export function useModel() {
   }
 
   async function handleMouseMove(cursorPoint: CursorPoint) {
-    // const monitor = await getCursorMonitor(cursorPoint)
-
-    // const { size, position } = monitor
-
-    const xRatio = cursorPoint.x / 4000
-    const yRatio = cursorPoint.y / 2000
-
-    // console.log("Ratio: x={}, y={}", xRatio, yRatio);
-
     for (const id of ['ParamMouseX', 'ParamMouseY', 'ParamAngleX', 'ParamAngleY']) {
       const { min, max } = live2d.getParameterRange(id)
 
@@ -126,7 +116,7 @@ export function useModel() {
 
       const isXAxis = id.endsWith('X')
 
-      const ratio = isXAxis ? xRatio : yRatio
+      const ratio = isXAxis ? cursorPoint.x : cursorPoint.y
       let value = max - (ratio * (max - min))
 
       if (isXAxis && catStore.model.mouseMirror) {
