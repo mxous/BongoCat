@@ -6,7 +6,7 @@ import Position from './components/position/index.vue'
 import ProList from '@/components/pro-list/index.vue'
 import ProListItem from '@/components/pro-list-item/index.vue'
 import { useCatStore } from '@/stores/cat'
-import { isWindows } from '@/utils/platform'
+import { isLinux, isWindows } from '@/utils/platform'
 
 const catStore = useCatStore()
 </script>
@@ -107,7 +107,7 @@ const catStore = useCatStore()
     </ProListItem>
 
     <ProListItem
-      v-if="isWindows"
+      v-if="isWindows || isLinux"
       :description="$t('pages.preference.cat.hints.mouseMode')"
       :title="$t('pages.preference.cat.labels.mouseMode')"
     >
@@ -122,7 +122,7 @@ const catStore = useCatStore()
     </ProListItem>
 
     <ProListItem
-      v-if="isWindows && catStore.window.mouseMode === 'relative'"
+      v-if="(isWindows || isLinux) && catStore.window.mouseMode === 'relative'"
       :title="$t('pages.preference.cat.labels.rumble')"
       vertical
     >
@@ -135,7 +135,7 @@ const catStore = useCatStore()
     </ProListItem>
 
     <ProListItem
-      v-if="isWindows && catStore.window.mouseMode === 'relative'"
+      v-if="(isWindows || isLinux) && catStore.window.mouseMode === 'relative'"
       :description="$t('pages.preference.cat.hints.mouseBounds')"
       :title="$t('pages.preference.cat.labels.mouseBoundsSize')"
       vertical
