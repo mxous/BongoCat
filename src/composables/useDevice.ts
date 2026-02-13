@@ -12,7 +12,7 @@ import { useCatStore } from '@/stores/cat'
 import { useModelStore } from '@/stores/model'
 import { inBetween } from '@/utils/is'
 import { getCursorMonitor } from '@/utils/monitor'
-import { isWindows } from '@/utils/platform'
+import { isLinux, isWindows } from '@/utils/platform'
 
 interface MouseButtonEvent {
   kind: 'MousePress' | 'MouseRelease'
@@ -47,22 +47,32 @@ export function useDevice() {
   let absolutePollInterval: ReturnType<typeof setInterval> | null = null
 
   const startListening = async () => {
-    invoke(INVOKE_KEY.START_DEVICE_LISTENING)
-
-    if (catStore.window.mouseMode === 'absolute') {
-      startAbsolutePolling()
-    } else {
+    if (isLinux) {
+      // On Linux, raw input (evdev) handles all events: keyboard, mouse buttons,
+      // and mouse movement. The rdev-based listener uses X11 which doesn't work on Wayland.
       await invoke(INVOKE_KEY.START_RAW_INPUT)
+    } else {
+      invoke(INVOKE_KEY.START_DEVICE_LISTENING)
+
+      if (catStore.window.mouseMode === 'absolute') {
+        startAbsolutePolling()
+      } else {
+        await invoke(INVOKE_KEY.START_RAW_INPUT)
+      }
     }
   }
 
   watch(() => catStore.window.mouseMode, async (mode) => {
     if (mode === 'absolute') {
-      await invoke(INVOKE_KEY.STOP_RAW_INPUT)
-      startAbsolutePolling()
+      if (!isLinux) {
+        await invoke(INVOKE_KEY.STOP_RAW_INPUT)
+        startAbsolutePolling()
+      }
     } else {
-      stopAbsolutePolling()
-      await invoke(INVOKE_KEY.START_RAW_INPUT)
+      if (!isLinux) {
+        stopAbsolutePolling()
+        await invoke(INVOKE_KEY.START_RAW_INPUT)
+      }
     }
   })
 

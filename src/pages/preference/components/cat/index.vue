@@ -107,7 +107,7 @@ const catStore = useCatStore()
     </ProListItem>
 
     <ProListItem
-      v-if="isWindows || isLinux"
+      v-if="isWindows"
       :description="$t('pages.preference.cat.hints.mouseMode')"
       :title="$t('pages.preference.cat.labels.mouseMode')"
     >

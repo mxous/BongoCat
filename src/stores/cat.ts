@@ -1,6 +1,8 @@
 import { defineStore } from 'pinia'
 import { reactive, ref } from 'vue'
 
+import { isLinux } from '@/utils/platform'
+
 export interface CatStore {
   model: {
     mirror: boolean
@@ -72,6 +74,12 @@ export const useCatStore = defineStore('cat', () => {
   })
 
   const init = () => {
+    // Absolute mouse mode is unavailable on Linux/Wayland
+    // (cursorPosition() always returns 0,0).
+    if (isLinux) {
+      window.mouseMode = 'relative'
+    }
+
     if (migrated.value) return
 
     model.mirror = mirrorMode.value
